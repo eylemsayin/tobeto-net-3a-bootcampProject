@@ -1,6 +1,9 @@
 ﻿using AutoMapper;
 using Business.Abstracts.Applications;
+using Business.Abstracts.ApplicationStates;
+using Business.Requests.Applications;
 using Business.Requests.ApplicationStates;
+using Business.Responses.Applications;
 using Business.Responses.ApplicationStates;
 using Core.Utilities.Results;
 using DataAccess.Abstracts;
@@ -13,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace Business.Concretes.ApplicationStates
 {
-    public class ApplicationStateManager : IApplicationService
+    public class ApplicationStateManager : IApplicationStateService
     {
 
         private readonly IApplicationStateRepository _applicationStateRepository;
@@ -75,5 +78,6 @@ namespace Business.Concretes.ApplicationStates
             UpdatedApplicationStateResponse response = _mapper.Map<UpdatedApplicationStateResponse>(item);
             return new SuccessDataResult<UpdatedApplicationStateResponse>(response, "ApplicationState succesfully updated!");
         }
+
     }
 }

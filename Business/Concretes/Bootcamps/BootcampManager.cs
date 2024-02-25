@@ -74,4 +74,5 @@ namespace Business.Concretes.Bootcamps
             UpdatedBootcampResponse response = _mapper.Map<UpdatedBootcampResponse>(item);
             return new SuccessDataResult<UpdatedBootcampResponse>(response, "Bootcamp succesfully updated!");
         }
+    }
 }
