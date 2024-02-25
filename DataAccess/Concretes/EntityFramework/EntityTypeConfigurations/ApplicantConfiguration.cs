@@ -15,6 +15,7 @@ public class ApplicantConfiguration :IEntityTypeConfiguration<Applicant>
     {
         builder.ToTable("Applicants");
         builder.Property(x => x.About).HasColumnName("About");
+        builder.HasMany(p => p.Applications);
 
     }
 }
