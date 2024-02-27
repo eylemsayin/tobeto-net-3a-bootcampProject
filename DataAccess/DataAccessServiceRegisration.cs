@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
+
 namespace DataAccess;
 
 public static class DataAccessServiceRegisration
@@ -17,6 +18,12 @@ public static class DataAccessServiceRegisration
         services.AddScoped<IInstructorRepository, InstructorRepository>();
         services.AddScoped<IEmployeeRepository, EmployeeRepository>();
         services.AddScoped<IApplicantRepository, ApplicantRepository>();
+        services.AddScoped<IApplicationRepository, ApplicationRepository>();
+        services.AddScoped<IBootcampRepository, BootcampRepository>();
+        services.AddScoped<IBootcampStateRepository, BootcampStateRepository>();
+        services.AddScoped<IApplicationStateRepository, ApplicationStateRepository>();
+
+
         return services;
     }
 }
