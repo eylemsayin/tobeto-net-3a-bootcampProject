@@ -6,9 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DataAccess.Abstracts
+namespace DataAccess.Abstracts;
+
+public interface IBlacklistRepository : IAsyncRepository<Blacklist, int>, IRepository<Blacklist, int>
 {
-    public interface IBootcampStateRepository: IAsyncRepository<BootcampState, int>, IRepository<BootcampState, int>
-    {
-    }
 }

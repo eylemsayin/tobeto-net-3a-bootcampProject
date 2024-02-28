@@ -7,7 +7,7 @@ namespace WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class BootcampStateController : ControllerBase
+    public class BootcampStateController : BaseController
     {
         private readonly IBootcampStateService _bootcampStateService;
 
@@ -45,5 +45,8 @@ namespace WebApi.Controllers
         {
             return Ok(await _bootcampStateService.UpdateAsync(request));
         }
+
+
+
     }
 }

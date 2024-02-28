@@ -1,4 +1,6 @@
-﻿using Business.Abstracts.Applications;
+﻿using Business.Abstracts;
+using Business.Abstracts.Applications;
+using Business.Requests.Applicant;
 using Business.Requests.Applications;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -7,7 +9,7 @@ namespace WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ApplicationController : ControllerBase
+    public class ApplicationController :BaseController
     {
         private readonly IApplicationService _applicationService;
 

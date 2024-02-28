@@ -8,11 +8,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DataAccess.Concretes.Repositories;
-
-public class ApplicationStateRepository : EfRepositoryBase<ApplicationState, int, BaseDbContext>, IApplicationStateRepository
+namespace DataAccess.Concretes.Repositories
 {
-    public ApplicationStateRepository(BaseDbContext context) : base(context)
+    public class BlacklistRepository : EfRepositoryBase<Blacklist, int, BaseDbContext>, IBlacklistRepository
     {
+        public BlacklistRepository(BaseDbContext context) : base(context)
+        {
+        }
     }
 }
