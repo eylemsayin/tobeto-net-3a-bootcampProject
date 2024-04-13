@@ -15,10 +15,10 @@ namespace Business.Abstracts.Applications
 {
     public interface IApplicationService
     {
-        public Task<IDataResult<CreatedApplicationResponse>> AddAsync(CreateApplicationRequest request);
-        public Task<IDataResult<UpdatedApplicationResponse>> UpdateAsync(UpdateApplicationRequest request);
-        public Task<IDataResult<DeletedApplicationResponse>> DeleteAsync(DeleteApplicationRequest request);
-        public Task<IDataResult<List<GetAllApplicationResponse>>> GetAllAsync();
-        public Task<IDataResult<GetByIdApplicationResponse>> GetByIdAsync(int id);
+        Task<IDataResult<CreatedApplicationResponse>> AddAsync(CreateApplicationRequest request);
+        Task<IDataResult<UpdatedApplicationResponse>> UpdateAsync(UpdateApplicationRequest request);
+        Task<IResult> DeleteAsync(DeleteApplicationRequest request);
+        Task<IDataResult<List<GetAllApplicationResponse>>> GetAllAsync();
+        Task<IDataResult<GetByIdApplicationResponse>> GetByIdAsync(int id);
     }
 }

@@ -1,20 +1,17 @@
-﻿using Business.Requests.Instructor;
-using Business.Requests.User;
-using Business.Responses.Instructor;
+﻿using Core.Utilities.Security.Entities;
+using Core.Utilities.Results;
 using Business.Responses.User;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Business.Requests.User;
 
-namespace Business.Abstracts.User;
+namespace Business.Abstracts.Users;
 
 public interface IUserService
 {
-    Task<CreatedUserResponse> AddAsync(CreateUserRequest request);
-    Task<UpdatedUserResponse> UpdateAsync(UpdateUserRequest request);
-    Task<DeletedUserResponse> DeleteAsync(DeleteUserRequest request);
-    Task<List<GetAllUserResponse>> GetAllAsync();
-    Task<GetByIdUserResponse> GetByIdAsync(int id);
+    Task<IDataResult<CreatedUserResponse>> AddAsync(CreateUserRequest request);
+    Task<IDataResult<UpdatedUserResponse>> UpdateAsync(UpdateUserRequest request);
+    Task<IResult> DeleteAsync(DeleteUserRequest request);
+    Task<IDataResult<List<GetAllUserResponse>>> GetAllAsync();
+    Task<IDataResult<GetByIdUserResponse>> GetByIdAsync(int id);
+    Task<DataResult<User>> GetById(int id);
+    Task<DataResult<User>> GetByMail(string email);
 }

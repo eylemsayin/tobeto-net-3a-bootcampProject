@@ -1,4 +1,6 @@
-﻿using Business.Requests.ApplicationStates;
+﻿using Business.Requests.Applicant;
+using Business.Requests.ApplicationStates;
+using Business.Responses.Applicant;
 using Business.Responses.ApplicationStates;
 using Core.Utilities.Results;
 using System;
@@ -11,10 +13,10 @@ namespace Business.Abstracts.ApplicationStates
 {
     public interface IApplicationStateService
     {
-        public Task<IDataResult<CreatedApplicationStateResponse>> AddAsync(CreateApplicationStateRequest request);
-        public Task<IDataResult<UpdatedApplicationStateResponse>> UpdateAsync(UpdateApplicationStateRequest request);
-        public Task<IDataResult<DeletedApplicationStateResponse>> DeleteAsync(DeleteApplicationStateRequest request);
-        public Task<IDataResult<List<GetAllApplicationStateResponse>>> GetAllAsync();
-        public Task<IDataResult<GetByIdApplicationStateResponse>> GetByIdAsync(int id);
+        Task<IDataResult<CreatedApplicationStateResponse>> AddAsync(CreateApplicationStateRequest request);
+        Task<IDataResult<UpdatedApplicationStateResponse>> UpdateAsync(UpdateApplicationStateRequest request);
+        Task<IResult> DeleteAsync(DeleteApplicationStateRequest request);
+        Task<IDataResult<List<GetAllApplicationStateResponse>>> GetAllAsync();
+        Task<IDataResult<GetByIdApplicationStateResponse>> GetByIdAsync(int id);
     }
 }

@@ -5,10 +5,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Entities.Concretes
+namespace Entities.Concretes;
+
+public class ApplicationState : BaseEntity<int>
 {
-    public class ApplicationState: BaseEntity<int>
+    public string Name { get; set; }
+
+    public ApplicationState()
     {
-        public string Name { get; set; }
+
+    }
+
+    public ApplicationState(string name)
+    {
+        Name = name;
     }
 }

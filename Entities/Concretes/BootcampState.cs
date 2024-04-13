@@ -5,10 +5,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Entities.Concretes
+namespace Entities.Concretes;
+
+public class BootcampState : BaseEntity<int>
 {
-    public class BootcampState: BaseEntity<int>
+    public string Name { get; set; }
+
+    public BootcampState()
     {
-        public string Name { get; set; }
+
+    }
+
+    public BootcampState(string name)
+    {
+        Name = name;
     }
 }

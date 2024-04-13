@@ -1,115 +1,90 @@
-﻿using Business.Abstracts.User;
+﻿using AutoMapper;
+using Business.Abstracts;
+using Business.Abstracts.Users;
+using Business.Constants;
 using Business.Requests.User;
 using Business.Responses.User;
+using Business.Rules;
+using Core.Aspects.Autofac.Logging;
+using Core.CrossCuttingConcerns.Logging.Serilog.Loggers;
+using Core.Utilities.Results;
+using Core.Utilities.Security.Entities;
 using DataAccess.Abstracts;
 using Entities.Concretes;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Business.Concretes;
 
 public class UserManager : IUserService
 {
     private readonly IUserRepository _userRepository;
-
-    public UserManager(IUserRepository userRepository)
+    private readonly IMapper _mapper;
+    private readonly UserBusinessRules _rules;
+    public UserManager(IUserRepository userRepository, IMapper mapper, UserBusinessRules rules)
     {
         _userRepository = userRepository;
+        _mapper = mapper;
+        _rules = rules;
     }
 
-    public async Task<CreatedUserResponse> AddAsync(CreateUserRequest request)
+    public async Task<IDataResult<CreatedUserResponse>> AddAsync(CreateUserRequest request)
     {
-        User userToCreate = new User();
-        userToCreate.UserName = request.UserName;
-        userToCreate.FirstName = request.FirstName;
-        userToCreate.LastName = request.LastName;
-        userToCreate.DateOfBirth = request.DateOfBirth;
-        userToCreate.NationalIdentity = request.NationalIdentity;
-        userToCreate.Email = request.Email;
-        userToCreate.Password = request.Password;
-        await _userRepository.AddAsync(userToCreate);
-
-        CreatedUserResponse response = new CreatedUserResponse();
-        response.UserName = userToCreate.UserName;
-        response.FirstName = userToCreate.FirstName;
-        response.LastName = userToCreate.LastName;
-        response.DateOfBirth= userToCreate.DateOfBirth;
-        response.NationalIdentity = userToCreate.NationalIdentity;
-        response.Email = userToCreate.Email;
-        response.Password = userToCreate.Password;
-        return response;
+        User user = _mapper.Map<User>(request);
+        await _userRepository.AddAsync(user);
+        CreatedUserResponse response = _mapper.Map<CreatedUserResponse>(user);
+        return new SuccessDataResult<CreatedUserResponse>(response, UserMessages.UserAdded);
     }
 
-    public async Task<DeletedUserResponse> DeleteAsync(DeleteUserRequest request)
+    public async Task<IResult> DeleteAsync(DeleteUserRequest request)
     {
-        User userToDelete = new User();
-        userToDelete.Id = request.Id;
-        await _userRepository.DeleteAsync(userToDelete);
+        await _rules.CheckIdIfNotExist(request.Id);
+        var item = await _userRepository.GetAsync(x => x.Id == request.Id);
+        await _userRepository.DeleteAsync(item);
 
-        DeletedUserResponse response = new DeletedUserResponse();
-        response.Id = userToDelete.Id;
-        return response;
-        
+        return new SuccessResult(UserMessages.UserDeleted);
     }
 
-    public async Task<List<GetAllUserResponse>> GetAllAsync()
+    public async Task<IDataResult<List<GetAllUserResponse>>> GetAllAsync()
     {
-        List<GetAllUserResponse> users = new List<GetAllUserResponse>();
-        foreach (var user in await  _userRepository.GetAllAsync())
-        {
-            GetAllUserResponse response = new GetAllUserResponse();
-            response.Id= user.Id;
-            response.UserName = user.UserName;
-            response.FirstName = user.FirstName;
-            response.LastName = user.LastName;
-            response.DateOfBirth = user.DateOfBirth;
-            response.NationalIdentity = user.NationalIdentity;
-            response.Email = user.Email;
-            response.Password = user.Password;
-            users.Add(response);
-        }
-        return users;
+        var list = await _userRepository.GetAllAsync();
+        List<GetAllUserResponse> response = _mapper.Map<List<GetAllUserResponse>>(list);
+        return new SuccessDataResult<List<GetAllUserResponse>>(response, UserMessages.UserListed);
     }
 
-    public async Task<GetByIdUserResponse> GetByIdAsync(int id)
+    public async Task<DataResult<User>> GetById(int id)
     {
-        GetByIdUserResponse response = new GetByIdUserResponse();
-        User user = await _userRepository.GetAsync(x => x.Id == id);
-        response.Id = user.Id;
-        response.UserName= user.UserName;
-        response.FirstName = user.FirstName;
-        response.LastName = user.LastName;
-        response.DateOfBirth= user.DateOfBirth;
-        response.NationalIdentity = user.NationalIdentity;
-        response.Email = user.Email;
-        response.Password = user.Password;
-        return response;
-
+        return new SuccessDataResult<User>(await _userRepository.GetAsync(x => x.Id == id));
     }
 
-    public async Task<UpdatedUserResponse> UpdateAsync(UpdateUserRequest request)
+    public async Task<IDataResult<GetByIdUserResponse>> GetByIdAsync(int id)
     {
-        User userToUpdate = await _userRepository.GetAsync(x => x.Id == request.Id);
-        userToUpdate.UserName = request.UserName;
-        userToUpdate.FirstName = request.FirstName;
-        userToUpdate.LastName = request.LastName;
-        userToUpdate.DateOfBirth = request.DateOfBirth;
-        userToUpdate.NationalIdentity = request.NationalIdentity;
-        userToUpdate.Email = request.Email;
-        userToUpdate.Password = request.Password;
-        await _userRepository.UpdateAsync(userToUpdate);
+        await _rules.CheckIdIfNotExist(id);
 
-        UpdatedUserResponse response = new UpdatedUserResponse();
-        response.UserName = userToUpdate.UserName;
-        response.FirstName = userToUpdate.FirstName;
-        response.LastName = userToUpdate.LastName;
-        response.DateOfBirth = userToUpdate.DateOfBirth;
-        response.NationalIdentity= userToUpdate.NationalIdentity;
-        response.Email = userToUpdate.Email;
-        response.Password = userToUpdate.Password;
-        return response;
+        var item = await _userRepository.GetAsync(x => x.Id == id);
+
+        GetByIdUserResponse response = _mapper.Map<GetByIdUserResponse>(item);
+
+
+        return new SuccessDataResult<GetByIdUserResponse>(response, UserMessages.UserFound);
+
     }
+
+    public Task<DataResult<User>> GetByMail(string email)
+    {
+        throw new NotImplementedException();
+    }
+
+    public async Task<IDataResult<UpdatedUserResponse>> UpdateAsync(UpdateUserRequest request)
+    {
+        await _rules.CheckIdIfNotExist(request.Id);
+
+        var item = await _userRepository.GetAsync(p => p.Id == request.Id);
+
+        _mapper.Map(request, item);
+        await _userRepository.UpdateAsync(item);
+
+        UpdatedUserResponse response = _mapper.Map<UpdatedUserResponse>(item);
+        return new SuccessDataResult<UpdatedUserResponse>(response, UserMessages.UserUpdated);
+    }
+
+
 }
